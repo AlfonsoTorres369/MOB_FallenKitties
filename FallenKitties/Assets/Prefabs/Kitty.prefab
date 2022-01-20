@@ -131,6 +131,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 40ed0bfc4687b2c42b5b2bce4421ea43, type: 3}
   - {fileID: 21300000, guid: 4510cd1d890c3fe4d84a794280320b35, type: 3}
   - {fileID: 21300000, guid: aa65080a06257d04b9e86f6886948fb7, type: 3}
-  MinVelocity: 0
-  MaxVelocity: 0
-  VelocityFactor: 0
+  MinVelocity: 1
+  MaxVelocity: 5
+  VelocityFactor: 0.25

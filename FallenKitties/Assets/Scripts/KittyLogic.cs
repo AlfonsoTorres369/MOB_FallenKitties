@@ -11,11 +11,6 @@ public class KittyLogic : MonoBehaviour
     public float VelocityFactor;
 
     private float velocity;
-    // Start is called before the first frame update
-    void Awake ()
-    {
-        CreateKitty();
-    }
 
     // Update is called once per frame
     void Update()
@@ -49,7 +44,7 @@ public class KittyLogic : MonoBehaviour
 
     private float CalculateKittyVelocity()
     {
-        return 2;
+        return GameManager.GetRandomNumber(MinVelocity, MaxVelocity + VelocityFactor * GameManager.Instance.gameLevel);
     }
 
     private void Fall()
@@ -57,5 +52,21 @@ public class KittyLogic : MonoBehaviour
         Vector3 newPosition = transform.position;
         newPosition.y -= velocity * Time.deltaTime;
         transform.position = newPosition;
+    }
+
+    public void Activate(Vector3 _position)
+    {
+        transform.position = _position;
+        gameObject.SetActive(true);
+        CreateKitty();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision != null)
+        {
+            gameObject.SetActive(false);
+            GameManager.Instance.AddDeadKitty();
+        }
     }
 }
