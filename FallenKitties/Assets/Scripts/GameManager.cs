@@ -20,20 +20,47 @@ public class GameManager : MonoBehaviour
     public int InitialKittiesPoolSize = 10;
     private List<KittyLogic> Kitties;
 
+    [Header("Player Configuration")]
+    public Player player;
+    public Transform PlayerSpawnPosition;
+
     [Header("Game Configuration")]
     [Min(1)]
-    public int Lifes;
+    public int HealthPoints;
     [Min(0)]
-    public float KittiesSpawnTime;
+    public float InitiaKittiesSpawnTime;
     [Min(0)]
     public float KittiesSpawnTimeFactor;
 
+    [Header("Game Data")]
+    public string ScoreDataId;
+
     private int score = 0;
     private int gameLevel = 1;
+    private float currentKittiesSpawnTime;
     private float elapsedKittiesSpawnTime = 0;
     private float elapsedDifficultyTime = 0;
-    public float DifficultyTime = 10;
+    public float InitialDifficultyTime = 10;
+    private float currentDifficultyTime;
     public float DifficultyTimeFactor = 1.3f;
+    private int maxScore;
+    private bool playing = false;
+    private int currentHealthPoints;
+
+    //Delegates
+    public delegate void OnPropertyUpdated(int _value);
+
+    public event OnPropertyUpdated ScoreUpdated;
+    public event OnPropertyUpdated HealthPointsUpdated;
+    public event OnPropertyUpdated MaxScoreUpdated;
+
+    public delegate void OnGameplayMessage();
+
+    public event OnGameplayMessage OnStopGame;
+
+    public delegate void OnPauseGame(bool _status);
+    public event OnPauseGame OnPause;
+
 
     // Start is called before the first frame update
     void Awake()
@@ -44,30 +71,32 @@ public class GameManager : MonoBehaviour
             Destroy(this);
 
         Kitties = new List<KittyLogic>();
+        GenerateData();
     }
 
     private void Start()
     {
-        for(int i = 0; i < InitialKittiesPoolSize; i++)
-        {
-            InstantiateKitty();
-        }
+        LoadData();
+        HealthPointsUpdated(HealthPoints);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (elapsedDifficultyTime >= DifficultyTime)
+        if(playing)
         {
-            UpgradeGameLevel();
-        }
-        else
-            elapsedDifficultyTime += Time.deltaTime;
+            if (elapsedDifficultyTime >= currentDifficultyTime)
+            {
+                UpgradeGameLevel();
+            }
+            else
+                elapsedDifficultyTime += Time.deltaTime;
 
-        if (elapsedKittiesSpawnTime >= KittiesSpawnTime)
-            ActivateKitty();
-        else
-            elapsedKittiesSpawnTime += Time.deltaTime;
+            if (elapsedKittiesSpawnTime >= currentKittiesSpawnTime)
+                ActivateKitty();
+            else
+                elapsedKittiesSpawnTime += Time.deltaTime;
+        }
     }
 
     public static float GetRandomNumber(float _min, float _max)
@@ -89,6 +118,16 @@ public class GameManager : MonoBehaviour
         }
 
         return newKitty;
+    }
+
+    private void ActivatePlayer()
+    {
+        if(player)
+        {
+            player.transform.position = PlayerSpawnPosition.position;
+            player.gameObject.SetActive(true);
+            player.SetInput(true);
+        }
     }
 
     private void ActivateKitty()
@@ -115,29 +154,129 @@ public class GameManager : MonoBehaviour
         return null;
     }
     //
-    public void AddDeadKitty()
+    public void SubstractLife()
     {
-        /*if(++deadKitties >= MaxNumberDeadKitties)
+        SetCurrentHealthPoints(--currentHealthPoints);
+
+        if(currentHealthPoints <= 0)
         {
-            Application.Quit();
-        }*/
+            StopGame();
+
+            if(UIManager.Instance)
+            {
+                UIManager.Instance.BackToMainMenu();
+            }
+        }
     }
 
     public void AddScore()
     {
-        ++score;
+        SetScore(++score);
+
+        if(score > maxScore)
+        {
+            SetMaxScore(score);
+            SaveData();
+        }
     }
 
     private void UpgradeGameLevel()
     {
         ++gameLevel;
-        DifficultyTime += DifficultyTimeFactor * DifficultyTime;
+        currentDifficultyTime += DifficultyTimeFactor * currentDifficultyTime;
         elapsedDifficultyTime = 0;
-        KittiesSpawnTime -= KittiesSpawnTimeFactor * KittiesSpawnTime;
+        currentKittiesSpawnTime -= KittiesSpawnTimeFactor * currentKittiesSpawnTime;
     }
 
     public int GetGameLevel()
     {
         return gameLevel;
+    }
+
+    public void StartGame()
+    {
+        SetScore(0);
+        SetCurrentHealthPoints(HealthPoints);
+        playing = true;
+        currentKittiesSpawnTime = InitiaKittiesSpawnTime;
+        currentDifficultyTime = InitialDifficultyTime;
+        gameLevel = 1;
+
+        if (Kitties.Count == 0)
+        {
+            for (int i = 0; i < InitialKittiesPoolSize; i++)
+            {
+                InstantiateKitty();
+            }
+        }
+
+        ActivatePlayer();
+    }
+
+    public void StopGame()
+    {
+        playing = false;
+
+        if(OnStopGame != null)
+            OnStopGame();
+    }
+
+    public void RestartGame()
+    {
+        StopGame();
+        StartGame();
+    }
+
+    public void PauseGame(bool _status)
+    {
+        playing = !_status;
+
+        if(OnPause != null)
+            OnPause(_status);
+    }
+
+    private void LoadData()
+    {
+        SetMaxScore(PlayerPrefs.GetInt(ScoreDataId));
+    }
+
+    private void GenerateData()
+    {
+        if (!PlayerPrefs.HasKey(ScoreDataId))
+            PlayerPrefs.SetInt(ScoreDataId, 0);
+    }
+
+    private void SaveData()
+    {
+        PlayerPrefs.SetInt(ScoreDataId, maxScore);
+    }
+
+    private void OnApplicationQuit()
+    {
+        SaveData();
+    }
+
+    private void SetScore(int _value)
+    {
+        score = _value;
+
+        if(ScoreUpdated != null)
+            ScoreUpdated(score);
+    }
+
+    private void SetMaxScore(int _value)
+    {
+        maxScore = _value;
+
+        if(MaxScoreUpdated != null)
+            MaxScoreUpdated(maxScore);
+    }
+
+    private void SetCurrentHealthPoints(int _value)
+    {
+        currentHealthPoints =_value;
+
+        if(HealthPointsUpdated != null)
+            HealthPointsUpdated(currentHealthPoints);
     }
 }

@@ -14,7 +14,16 @@ public class KittyLogic : MonoBehaviour
     public float VelocityFactor;
 
     private float velocity;
+    private bool enabledMovement = true;
 
+    private void Start()
+    {
+        if(GameManager.Instance)
+        {
+            GameManager.Instance.OnStopGame += Deactivate;
+            GameManager.Instance.OnPause += PauseKitty;
+        }
+    }
     // Update is called once per frame
     void Update()
     {
@@ -52,9 +61,12 @@ public class KittyLogic : MonoBehaviour
 
     private void Fall()
     {
-        Vector3 newPosition = transform.position;
-        newPosition.y -= velocity * Time.deltaTime;
-        transform.position = newPosition;
+        if(enabledMovement)
+        {
+            Vector3 newPosition = transform.position;
+            newPosition.y -= velocity * Time.deltaTime;
+            transform.position = newPosition;
+        }
     }
 
     public void Activate(Vector3 _position)
@@ -64,12 +76,22 @@ public class KittyLogic : MonoBehaviour
         CreateKitty();
     }
 
+    public void Deactivate()
+    {
+        gameObject.SetActive(false);
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision != null)
         {
-            gameObject.SetActive(false);
-            GameManager.Instance.AddDeadKitty();
+            Deactivate();
+            GameManager.Instance.SubstractLife();
         }
+    }
+
+    public void PauseKitty(bool _status)
+    {
+        enabledMovement = !_status;
     }
 }

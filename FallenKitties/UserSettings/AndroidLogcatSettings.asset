@@ -1,13 +1,68 @@
 {
-    "m_SelectedDeviceId": "",
+    "m_SelectedDeviceId": "R5CN2032QHN",
     "m_SelectedPackage": {
-        "deviceId": "",
-        "name": "",
-        "processId": 0,
+        "deviceId": "R5CN2032QHN",
+        "name": "com.DefaultCompany.com.unity.template.mobile2D",
+        "processId": 14229,
         "exited": false
     },
     "m_SelectedPriority": 0,
-    "m_KnownPackagesForSerialization": [],
+    "m_KnownPackagesForSerialization": [
+        {
+            "deviceId": "R5CN2032QHN",
+            "name": "com.DefaultCompany.com.unity.template.mobile2D",
+            "processId": 18627,
+            "exited": false
+        },
+        {
+            "deviceId": "R5CN2032QHN",
+            "name": "com.DefaultCompany.com.unity.template.mobile2D",
+            "processId": 24054,
+            "exited": false
+        },
+        {
+            "deviceId": "R5CN2032QHN",
+            "name": "com.DefaultCompany.com.unity.template.mobile2D",
+            "processId": 25671,
+            "exited": false
+        },
+        {
+            "deviceId": "R5CN2032QHN",
+            "name": "com.DefaultCompany.com.unity.template.mobile2D",
+            "processId": 27085,
+            "exited": false
+        },
+        {
+            "deviceId": "R5CN2032QHN",
+            "name": "com.DefaultCompany.com.unity.template.mobile2D",
+            "processId": 28109,
+            "exited": false
+        },
+        {
+            "deviceId": "R5CN2032QHN",
+            "name": "com.DefaultCompany.com.unity.template.mobile2D",
+            "processId": 8003,
+            "exited": false
+        },
+        {
+            "deviceId": "R5CN2032QHN",
+            "name": "com.DefaultCompany.com.unity.template.mobile2D",
+            "processId": 12275,
+            "exited": false
+        },
+        {
+            "deviceId": "R5CN2032QHN",
+            "name": "com.DefaultCompany.com.unity.template.mobile2D",
+            "processId": 13312,
+            "exited": false
+        },
+        {
+            "deviceId": "R5CN2032QHN",
+            "name": "com.DefaultCompany.com.unity.template.mobile2D",
+            "processId": 14229,
+            "exited": false
+        }
+    ],
     "m_Tags": {
         "m_Entries": [
             {
@@ -41,9 +96,20 @@
         ]
     },
     "m_MemoryViewerState": {
-        "MemoryWindowHeight": 0.0,
-        "MemoryWindowWidth": 0.0,
-        "MemoryTypeEnabled": [],
+        "MemoryWindowHeight": 300.0,
+        "MemoryWindowWidth": 170.0,
+        "MemoryTypeEnabled": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+        ],
         "MemoryGroup": 2,
         "Behavior": 0
     },
