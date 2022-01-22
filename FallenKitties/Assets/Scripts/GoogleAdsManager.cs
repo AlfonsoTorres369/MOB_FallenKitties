@@ -6,6 +6,8 @@ using GoogleMobileAds.Api;
 public class GoogleAdsManager : MonoBehaviour
 {
     private BannerView bannerView;
+
+    [Header("Ads IDs")]
     public string AndroidBannerId;
     public string IPhoneBannerId;
     // Start is called before the first frame update

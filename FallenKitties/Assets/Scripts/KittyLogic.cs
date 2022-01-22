@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class KittyLogic : MonoBehaviour
 {
+    [Header("Kitty Self References")]
     public SpriteRenderer SpriteRenderer;
+
+    [Header("Configuration")]
     public Sprite[] KittiesSprites;
     public float MinVelocity;
     public float MaxVelocity;
@@ -44,7 +47,7 @@ public class KittyLogic : MonoBehaviour
 
     private float CalculateKittyVelocity()
     {
-        return GameManager.GetRandomNumber(MinVelocity, MaxVelocity + VelocityFactor * GameManager.Instance.gameLevel);
+        return GameManager.GetRandomNumber(MinVelocity, MaxVelocity + VelocityFactor * GameManager.Instance.GetGameLevel());
     }
 
     private void Fall()

@@ -7,12 +7,6 @@ public class Player : MonoBehaviour
 
     public Camera Camera;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -29,7 +23,9 @@ public class Player : MonoBehaviour
         if(collision != null)
         {
             collision.gameObject.SetActive(false);
-            GameManager.Instance.AddScore();
+
+            if(GameManager.Instance)
+                GameManager.Instance.AddScore();
         }
     }
 }
