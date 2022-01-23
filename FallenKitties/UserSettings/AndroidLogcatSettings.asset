@@ -3,7 +3,7 @@
     "m_SelectedPackage": {
         "deviceId": "R5CN2032QHN",
         "name": "com.DefaultCompany.com.unity.template.mobile2D",
-        "processId": 14229,
+        "processId": 10468,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -60,6 +60,12 @@
             "deviceId": "R5CN2032QHN",
             "name": "com.DefaultCompany.com.unity.template.mobile2D",
             "processId": 14229,
+            "exited": false
+        },
+        {
+            "deviceId": "R5CN2032QHN",
+            "name": "com.DefaultCompany.com.unity.template.mobile2D",
+            "processId": 10468,
             "exited": false
         }
     ],
