@@ -16,11 +16,12 @@ public class UIManager : MonoBehaviour
     public GameObject MainMenu;
     public GameObject PauseMenu;
 
-    [Header("Updated Items")]
+    [Header("Updated UI Items")]
     public Text ScoreText;
     public Text HealthText;
     public Text MaxScoreText;
 
+    //References
     private GameManager gameManager;
 
     // Start is called before the first frame update
@@ -42,7 +43,8 @@ public class UIManager : MonoBehaviour
             gameManager.HealthPointsUpdated += UpdateHealthPoints;
         }
     }
-    
+
+    // --------- Updating UI data ---------
     void UpdateScore(int _value)
     {
         if(ScoreText)
@@ -60,7 +62,9 @@ public class UIManager : MonoBehaviour
         if(HealthText)
             HealthText.text = _value.ToString();
     }
+    // ------------------------------------
 
+    // --------- Menu Flow ---------
     public void Play()
     {
         if(GUI && gameManager)
@@ -123,8 +127,13 @@ public class UIManager : MonoBehaviour
 
             MainMenu.SetActive(true);
             gameManager.StopGame();
+
+            if(GoogleAdsManager.Instance)
+                GoogleAdsManager.Instance.RequestInterstitial();
+
         }
     }
+    // ------------------------------------
 
     public void Quit()
     {

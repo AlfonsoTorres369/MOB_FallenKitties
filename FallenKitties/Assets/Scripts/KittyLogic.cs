@@ -13,6 +13,7 @@ public class KittyLogic : MonoBehaviour
     public float MaxVelocity;
     public float VelocityFactor;
 
+    // Kitty Logic
     private float velocity;
     private bool enabledMovement = true;
 
@@ -30,6 +31,7 @@ public class KittyLogic : MonoBehaviour
         Fall();
     }
 
+    // --------- Kitties Configuration ---------
     private void CreateKitty()
     {
         SpriteRenderer.sprite = SelectKittySprite();
@@ -58,7 +60,9 @@ public class KittyLogic : MonoBehaviour
     {
         return GameManager.GetRandomNumber(MinVelocity, MaxVelocity + VelocityFactor * GameManager.Instance.GetGameLevel());
     }
+    // ------------------------------------
 
+    // --------- Kitty Logic ---------
     private void Fall()
     {
         if(enabledMovement)
@@ -81,6 +85,11 @@ public class KittyLogic : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    public void PauseKitty(bool _status)
+    {
+        enabledMovement = !_status;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision != null)
@@ -90,8 +99,5 @@ public class KittyLogic : MonoBehaviour
         }
     }
 
-    public void PauseKitty(bool _status)
-    {
-        enabledMovement = !_status;
-    }
+    // ------------------------------------
 }

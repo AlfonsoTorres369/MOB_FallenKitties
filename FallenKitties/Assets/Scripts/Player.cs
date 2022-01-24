@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-
+    [Header("References")]
     public Camera Camera;
 
+    //Player logic variables
     private bool enabledInput = true;
 
 
@@ -29,17 +30,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if(collision != null)
-        {
-            collision.gameObject.SetActive(false);
-
-            if(GameManager.Instance)
-                GameManager.Instance.AddScore();
-        }
-    }
-
+    // --------- Player Logic ---------
     public void Deactivate()
     {
         gameObject.SetActive(false);
@@ -53,5 +44,17 @@ public class Player : MonoBehaviour
     public void PausePlayer(bool _status)
     {
         SetInput(!_status);
+    }
+    // ------------------------------------
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision != null)
+        {
+            collision.gameObject.SetActive(false);
+
+            if(GameManager.Instance)
+                GameManager.Instance.AddScore();
+        }
     }
 }

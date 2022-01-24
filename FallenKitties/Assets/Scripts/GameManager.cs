@@ -18,7 +18,6 @@ public class GameManager : MonoBehaviour
     public GameObject KittiesFolder;
     public GameObject KittiesPrefab;
     public int InitialKittiesPoolSize = 10;
-    private List<KittyLogic> Kitties;
 
     [Header("Player Configuration")]
     public Player player;
@@ -31,31 +30,36 @@ public class GameManager : MonoBehaviour
     public float InitiaKittiesSpawnTime;
     [Min(0)]
     public float KittiesSpawnTimeFactor;
+    [Min(0)]
+    public float InitialDifficultyTime = 10;
+    [Min(0)]
+    public float DifficultyTimeFactor = 1.3f;
 
     [Header("Game Data")]
     public string ScoreDataId;
 
+    //Kitties references
+    private List<KittyLogic> Kitties;
+
+    //Game Logic
     private int score = 0;
     private int gameLevel = 1;
-    private float currentKittiesSpawnTime;
-    private float elapsedKittiesSpawnTime = 0;
-    private float elapsedDifficultyTime = 0;
-    public float InitialDifficultyTime = 10;
-    private float currentDifficultyTime;
-    public float DifficultyTimeFactor = 1.3f;
     private int maxScore;
     private bool playing = false;
     private int currentHealthPoints;
 
+    private float elapsedKittiesSpawnTime = 0;
+    private float currentKittiesSpawnTime;
+    private float elapsedDifficultyTime = 0;
+    private float currentDifficultyTime;
+
     //Delegates
     public delegate void OnPropertyUpdated(int _value);
-
     public event OnPropertyUpdated ScoreUpdated;
     public event OnPropertyUpdated HealthPointsUpdated;
     public event OnPropertyUpdated MaxScoreUpdated;
 
     public delegate void OnGameplayMessage();
-
     public event OnGameplayMessage OnStopGame;
 
     public delegate void OnPauseGame(bool _status);
@@ -99,11 +103,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public static float GetRandomNumber(float _min, float _max)
-    {
-        return Random.Range(_min, _max);
-    }
-
+    // --------- Game flow & logic ---------
     private KittyLogic InstantiateKitty()
     {
         KittyLogic newKitty = Instantiate(KittiesPrefab, LeftSpawnerPoint.position, Quaternion.identity).GetComponent<KittyLogic>();
@@ -118,6 +118,17 @@ public class GameManager : MonoBehaviour
         }
 
         return newKitty;
+    }
+
+    private KittyLogic GetValidKitty()
+    {
+        foreach (KittyLogic kitty in Kitties)
+        {
+            if (!kitty.gameObject.activeInHierarchy)
+                return kitty;
+        }
+
+        return null;
     }
 
     private void ActivatePlayer()
@@ -142,18 +153,7 @@ public class GameManager : MonoBehaviour
             elapsedKittiesSpawnTime = 0;
         }
     }
-
-    private KittyLogic GetValidKitty()
-    {
-        foreach(KittyLogic kitty in Kitties)
-        {
-            if(!kitty.gameObject.activeInHierarchy)
-                return kitty;
-        }
-
-        return null;
-    }
-    //
+    
     public void SubstractLife()
     {
         SetCurrentHealthPoints(--currentHealthPoints);
@@ -186,11 +186,6 @@ public class GameManager : MonoBehaviour
         currentDifficultyTime += DifficultyTimeFactor * currentDifficultyTime;
         elapsedDifficultyTime = 0;
         currentKittiesSpawnTime -= KittiesSpawnTimeFactor * currentKittiesSpawnTime;
-    }
-
-    public int GetGameLevel()
-    {
-        return gameLevel;
     }
 
     public void StartGame()
@@ -234,7 +229,9 @@ public class GameManager : MonoBehaviour
         if(OnPause != null)
             OnPause(_status);
     }
+    // ------------------------------------
 
+    // --------- Game Data Functions ---------
     private void LoadData()
     {
         SetMaxScore(PlayerPrefs.GetInt(ScoreDataId));
@@ -256,7 +253,10 @@ public class GameManager : MonoBehaviour
         SaveData();
     }
 
-    private void SetScore(int _value)
+    // ------------------------------------
+
+    // --------- Setters / Getters ---------
+    public void SetScore(int _value)
     {
         score = _value;
 
@@ -264,7 +264,7 @@ public class GameManager : MonoBehaviour
             ScoreUpdated(score);
     }
 
-    private void SetMaxScore(int _value)
+    public void SetMaxScore(int _value)
     {
         maxScore = _value;
 
@@ -272,11 +272,24 @@ public class GameManager : MonoBehaviour
             MaxScoreUpdated(maxScore);
     }
 
-    private void SetCurrentHealthPoints(int _value)
+    public void SetCurrentHealthPoints(int _value)
     {
         currentHealthPoints =_value;
 
         if(HealthPointsUpdated != null)
             HealthPointsUpdated(currentHealthPoints);
     }
+
+    public int GetGameLevel()
+    {
+        return gameLevel;
+    }
+    // ------------------------------------
+
+    // --------- Static methods (utilities) ---------
+    public static float GetRandomNumber(float _min, float _max)
+    {
+        return Random.Range(_min, _max);
+    }
+    // ------------------------------------
 }
